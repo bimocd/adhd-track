@@ -21,6 +21,10 @@
     "indentWidth": 2
   },
   "linter": {
+    "includes": [
+      "**",
+      "!**/shadcn/*"
+    ],
     "enabled": true,
     "rules": {
       "complexity": {
@@ -30,6 +34,7 @@
         "noNoninteractiveTabindex": "off"
       },
       "correctness": {
+        "useHookAtTopLevel": "info",
         "useExhaustiveDependencies": "off"
       },
       "recommended": true,
