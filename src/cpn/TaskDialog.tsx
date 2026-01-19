@@ -1,6 +1,11 @@
 import { icons } from "lucide-react";
 import { AnimatePresence } from "motion/react";
-import { type ComponentProps, type PropsWithChildren, useRef, useState } from "react";
+import {
+  type ComponentProps,
+  type PropsWithChildren,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "@/shadcn/ui/button";
 import {
   Dialog,
@@ -17,6 +22,7 @@ import {
 } from "../lib";
 import { DialogInput } from "./Dialog";
 
+// TODO: simplify, too much repetition
 export function TaskDialog({ children }: PropsWithChildren) {
   const dialogData = useTaskContext((s) => s.dialogData);
   const removeDialog = useTaskContext((s) => s.removeDialog);
@@ -66,7 +72,7 @@ function CreateSubTaskDialogContent({
   const createTask = useTaskContext((s) => s.createTask);
 
   function isNameValid() {
-    return name.trim() !== ""
+    return name.trim() === "";
   }
 
   function confirmCreateTask() {
@@ -108,9 +114,14 @@ function EditTaskDialogContent({
   const task = useTaskContext((s) => s.getTask(dialogData.taskID));
   const renameTask = useTaskContext((s) => s.renameTask);
   const removeDialog = useTaskContext((s) => s.removeDialog);
+  const setDialogInputEditName = useTaskContext((s) => s.setDialogInputEditName);
 
   if (!task) throw new Error(`wtf no task for task ID ${dialogData.taskID}`);
 
+  function onConfirm() {
+    renameTask(dialogData.taskID, dialogData.inputName)
+    removeDialog()
+  }
   return (
     <RawDialogContent
       data={{
@@ -118,15 +129,19 @@ function EditTaskDialogContent({
         inputs: [
           {
             ...$presetTitleInput,
-            placeholder: task.name,
-            onEnter: removeDialog,
+            placeholder: task.title,
+            onEnter: onConfirm,
             hook: {
-              value: task.name,
-              setValue: (newName) => renameTask(dialogData.taskID, newName),
+              value: dialogData.inputName,
+              setValue: setDialogInputEditName,
             },
           },
         ],
-        buttons: [{ ...$presetConfirmButton, onClick: removeDialog }],
+        buttons: [{
+          ...$presetConfirmButton,
+          disabled: dialogData.inputName.trim() === "",
+          onClick: onConfirm
+        }],
       }}
     />
   );
@@ -197,13 +212,13 @@ function RawDialogContent({ data }: { data: RawDialogContentData }) {
         event.preventDefault();
 
         const input = inputRef.current as HTMLInputElement;
-        console.log(input)
         if (!input) return;
 
         const length = input.value.length;
         input.focus();
         input.setSelectionRange(length, length);
-      }}>
+      }}
+    >
       {data.title && (
         <DialogHeader className="flex flex-col gap-8 pb-5">
           <DialogTitle>{data.title}</DialogTitle>
@@ -211,7 +226,9 @@ function RawDialogContent({ data }: { data: RawDialogContentData }) {
       )}
       {data.inputs && (
         <div className="flex flex-col gap-5">
-          {data.inputs.map((inp) => <DialogInput ref={inputRef} key={inp.id} {...inp} />)}
+          {data.inputs.map((inp) => (
+            <DialogInput ref={inputRef} key={inp.id} {...inp} />
+          ))}
         </div>
       )}
       {data.buttons && (
