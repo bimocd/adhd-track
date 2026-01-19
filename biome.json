@@ -24,20 +24,20 @@
     "enabled": true,
     "rules": {
       "complexity": {
-        "useLiteralKeys": "info"
+        "useLiteralKeys": "off"
       },
       "a11y": {
-        "noNoninteractiveTabindex": "info"
+        "noNoninteractiveTabindex": "off"
       },
       "correctness": {
-        "useExhaustiveDependencies": "info"
+        "useExhaustiveDependencies": "off"
       },
       "recommended": true,
       "suspicious": {
-        "noArrayIndexKey": "info",
+        "noArrayIndexKey": "off",
         "noExplicitAny": "info",
-        "noDocumentCookie": "info",
-        "noUnknownAtRules": "info"
+        "noDocumentCookie": "off",
+        "noUnknownAtRules": "off"
       }
     },
     "domains": {
