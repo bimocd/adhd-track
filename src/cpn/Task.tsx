@@ -14,9 +14,12 @@ import { TaskList } from "./TaskList";
     - drag task to trash(delete) lol
     */
 export function Task({ taskID }: { taskID: string }) {
+
   const task = useTaskContext((s) => s.getTask(taskID))
   const title = useTaskContext((s) => s.getTask(taskID)?.title)
   const secs = useTaskContext((s) => s.getTask(taskID)?.secs)
+  const open = useTaskContext((s) => s.getTask(taskID)?.open)
+
   const toggleTaskOpen = useTaskContext((s) => s.toggleTaskOpen);
   const startTask = useTaskContext((s) => s.startTask);
   const stopActiveTask = useTaskContext((s) => s.stopActiveTask);
@@ -130,7 +133,7 @@ export function Task({ taskID }: { taskID: string }) {
           </div>
         </div>
         <AnimatePresence>
-          {isParent && task.open && (
+          {isParent && open && (
             <motion.div {...motionProps} className="pl-.5">
               <TaskList taskIDs={childrenIDs} />
             </motion.div>
