@@ -1,6 +1,9 @@
 # TODO
 
-- Add Dnd-kit (drag and drop) for tasks (it's gonna be hard because tasks are nested + I need visual indicators for where the task will end up + smooth motion transitions)
+- Dnd-Kit
+  - set task as child of another task
+  - re-order tasks
+  - drag task to trash (delete) lol
 - Fix way of storing tasks on zustand & localstorage from tree to tables, from
   - ```
     {
@@ -26,3 +29,5 @@
     ]
     ``` 
 - Fix [`Dialog`](./src/cpn/Dialog.tsx) exit animation
+- History
+- Undo
