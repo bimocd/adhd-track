@@ -14,6 +14,8 @@ import { Input } from "@/shadcn/ui/input";
 import { Label } from "@/shadcn/ui/label";
 import { Textarea } from "@/shadcn/ui/textarea";
 
+// TODO: Fix[`Dialog`](./src/cpn / Dialog.tsx) exit animation
+
 export function TaskDialogWrapper({ children }: PropsWithChildren) {
   const dialogData = useTaskContext((s) => s.dialogData);
   return (

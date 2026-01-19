@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { useStore } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 import { RightClickMenu, type RightClickMenuItem } from "@/cpn/RightClickMenu";
 import { motionProps } from "@/motion";
 import { useIsMobile } from "@/shadcn/hooks/use-mobile";
@@ -15,7 +16,7 @@ import { TaskList } from "../cpn/TaskList";
 import {
   createTaskStore,
   TaskContext,
-  type TaskData,
+  type TaskObject,
   useDevToolsStateEffect,
   usePageTabEffect,
   useTaskContext,
@@ -23,7 +24,7 @@ import {
 
 export default function MainPage() {
   const [store] = useState(() => createTaskStore([]));
-  const [lsTasks, setLSTasks] = useLocalStorage<TaskData[]>("tasks", []);
+  const [lsTasks, setLSTasks] = useLocalStorage<TaskObject[]>("tasks", []);
   const [loading, setLoading] = useState(true);
 
   const loadTasks = useStore(store, (s) => s.loadTasks);
@@ -60,8 +61,10 @@ export function LoadingPage() {
 }
 
 export function ClientPage() {
-  const isEmpty = useTaskContext((s) => s.tasks.length === 0);
-  const tasks = useTaskContext((s) => s.tasks);
+  const tasksJSON = useTaskContext((s) => JSON.stringify(s.tasks, null, 2));
+  const rootTaskIDs = useTaskContext(useShallow((s) => s.getRootTaskIDs()));
+  const isEmpty = rootTaskIDs.length === 0
+
   const clearTasks = useTaskContext((s) => s.clearTasks);
   const mockPopulate = useTaskContext((s) => s.mockPopulate);
   const setDialogStateToTaskCreation = useTaskContext(
@@ -71,9 +74,8 @@ export function ClientPage() {
   usePageTabEffect();
 
   function handleDownload() {
-    const jsonString = JSON.stringify(tasks, null, 2);
 
-    const blob = new Blob([jsonString], { type: "application/json" });
+    const blob = new Blob([tasksJSON], { type: "application/json" });
     const url = URL.createObjectURL(blob);
 
     const a = document.createElement("a");
@@ -117,7 +119,7 @@ export function ClientPage() {
               {isEmpty ? (
                 <EmptyPage key="empty" />
               ) : (
-                <TaskList key="notempty" {...{ tasks }} />
+                <TaskList key="notempty" taskIDs={rootTaskIDs} />
               )}
             </div>
           </div>
@@ -130,6 +132,7 @@ export function ClientPage() {
 export function EmptyPage() {
   const isMobile = useIsMobile();
   const Icon = isMobile ? HandIcon : MousePointerClickIcon;
+
   return (
     <div className="w-full h-full flex items-center justify-center p-5 gap-2 opacity-50 ">
       <Icon key="icon" className="size-3.5" />

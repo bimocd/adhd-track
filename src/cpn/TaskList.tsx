@@ -1,14 +1,11 @@
-import { AnimatePresence } from "motion/react";
-import type { TaskData } from "../lib";
 import { Task } from "./Task";
-export function TaskList({ tasks }: { tasks: TaskData[] }) {
+
+export function TaskList({ taskIDs }: { taskIDs: string[] }) {
   return (
     <div className={`size-full flex flex-col gap-1 p-1`}>
-      <AnimatePresence>
-        {tasks.map((task) => (
-          <Task key={task.id} {...{ task }} />
-        ))}
-      </AnimatePresence>
+      {taskIDs.map((taskID) => (
+        <Task key={taskID} {...{ taskID }} />
+      ))}
     </div>
   );
 }
