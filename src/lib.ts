@@ -177,7 +177,7 @@ export const createTaskStore = (initialTasks: TaskObject[]) => create<TaskStoreD
     set({ tasks });
   },
   createTask(name, parentID) {
-    const newTask = $task(name, 0, parentID);
+    const newTask = $task(name, 0, parentID, `${Date.now()}`);
     set((s) => {
       return { tasks: [...s.tasks, newTask] };
     });
